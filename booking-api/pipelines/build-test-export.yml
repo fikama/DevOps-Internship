@@ -1,0 +1,61 @@
+trigger:
+- main
+
+jobs:
+
+- job: building
+  pool:
+    vmImage: ubuntu-latest
+  variables:
+     buildConfiguration: 'Release'
+  steps:
+  - task: UseDotNet@2
+    inputs:
+      version: '6.0.x'
+      includePreviewVersions: true # Required for preview versions
+
+  - script: dotnet restore
+    workingDirectory: ./Booking.Server
+    displayName: restore
+
+  - script: 'dotnet publish --no-restore --output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: ./Booking.Server
+    displayName: 'dotnet publish --no-restore --output $(Build.ArtifactStagingDirectory)'
+
+  - script: 'dotnet test --no-restore --no-build'
+    workingDirectory: ./Booking.Server
+    displayName: 'dotnet test --no-restore --no-build'
+
+  - script: 'cp Dockerfile $(Build.ArtifactStagingDirectory)'
+  #- script: | 
+  #    mkdir artifacts
+  #    cp -R Booking.Server/Booking.Server.API Booking.Server/Booking.Server.DB artifacts
+
+  - publish: $(Build.ArtifactStagingDirectory)
+    artifact: myartifact
+
+- job: docker_publish
+  dependsOn: building
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: none
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      artifact: myartifact
+      path: /home/vsts/work/1/s/
+  - script: |
+      pwd
+      echo ''
+      ls -R
+  - task: Docker@2
+    displayName: Login to Docker Hub
+    inputs:
+      command: login
+      containerRegistry: docker-azureDevOps
+  - task: Docker@2
+    displayName: Build and Push
+    inputs:
+      command: buildAndPush
+      repository: filip246/booking-api_azure
+      tags: latest
