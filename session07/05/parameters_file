@@ -1,0 +1,10 @@
+diskTier: Standard_LRS
+vmName: testvm
+vmImage: Debian
+size: Standard_B1ls
+vnetName: coolvirtnet
+subnetName: coolsubnet
+
+## Optional to specify:
+##customPublicDomainName:
+##reservedIp:

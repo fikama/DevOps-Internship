@@ -1,0 +1,3 @@
+nsgname: testnsg1
+rules: --name rule1 --priority 200,--name rule2 --priority 201
+region: UK South

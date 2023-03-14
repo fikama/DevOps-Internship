@@ -1,0 +1,3 @@
+vnetname: testVNet
+subnetname: sub1
+nsgname: testnsg1

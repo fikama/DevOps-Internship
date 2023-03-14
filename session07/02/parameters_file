@@ -1,0 +1,4 @@
+address: 192.168.0.0/16
+vnetname: testVNet
+region: UK South
+subnets: sub1 192.168.0.0/24,sub2 192.168.1.0/24
