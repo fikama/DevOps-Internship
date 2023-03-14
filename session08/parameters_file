@@ -1,0 +1,6 @@
+name: testAppService
+group: test
+region: uksouth
+sku: F1
+dockerImage: filip246/hello_world_nginx
+numberOfNodes: 1
