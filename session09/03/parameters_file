@@ -1,0 +1,6 @@
+asname: webpagy
+saname: infrastorage246
+waname: webpagy
+schedule: 7d
+retention: 8
+group: test

@@ -1,0 +1,5 @@
+region: uksouth 
+name: infrastorage246
+sku: Standard_LRS
+group: test
+tier: Hot
