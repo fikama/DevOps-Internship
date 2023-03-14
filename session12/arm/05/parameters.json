@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "value": "testvm246"
+        },
+        "vmImage": {
+            "value": {
+                    "publisher": "Canonical",
+                    "offer": "UbuntuServer",
+                    "sku": "18_04-lts-gen2",
+                    "version": "latest"
+                }
+        },
+        "vmPricingTier": {
+            "value": "Standard_B1s"
+        },
+        "vmDiskPricingTier": {
+            "value": "Standard_LRS"
+        },
+        "location": {
+            "value": "uksouth"
+        },
+        "vnetName": {
+            "value": "testvnet246"
+        },
+        "subnetName": {
+            "value": "sub1"
+        }
+    }
+}

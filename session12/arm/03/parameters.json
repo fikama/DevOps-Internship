@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "ukwest"
+        },
+        "nsgName": {
+            "value": "testnsg246"
+        },
+        "arrayOfRules": {
+            "value": [
+                {
+                    "name": "rule1",
+                    "priority": 200,
+                    "access": "Deny",
+                    "destinationAddressPrefix": "*",
+                    "destinationPortRange": "*",
+                    "direction": "Inbound",
+                    "protocol": "Udp",
+                    "sourceAddressPrefix": "*",
+                    "sourcePortRange": "*"
+                },
+                {
+                    "name": "rule2",
+                    "priority": 202,
+                    "access": "Deny",
+                    "destinationAddressPrefix": "*",
+                    "destinationPortRange": "*",
+                    "direction": "Outbound",
+                    "protocol": "Udp",
+                    "sourceAddressPrefix": "*",
+                    "sourcePortRange": "*"
+                }
+            ]
+        }
+    }
+}

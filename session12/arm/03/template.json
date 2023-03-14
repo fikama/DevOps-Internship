@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "nsgName": {
+          "type": "string"
+      },
+      "location": {
+          "type": "string"
+      },
+      "arrayOfRules": {
+          "type": "array",
+          "metadata": {
+              "description": "array of vnet subnets"
+          }
+      }
+  },
+  "variables":{
+  },
+  "resources":[
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2022-01-01",
+      "name": "[parameters('nsgName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "apiVersion": "2022-01-01",
+      "name": "[concat(parameters('nsgName'),'/',parameters('arrayOfRules')[copyIndex()].name)]",
+      "dependsOn":[
+        "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('nsgName'))]"
+      ],
+      "properties": {
+        "access": "[parameters('arrayOfRules')[copyIndex()].access]",
+        "priority": "[parameters('arrayOfRules')[copyIndex()].priority]",
+        "destinationAddressPrefix": "[parameters('arrayOfRules')[copyIndex()].destinationAddressPrefix]",
+        "destinationPortRange": "[parameters('arrayOfRules')[copyIndex()].destinationPortRange]",
+        "direction": "[parameters('arrayOfRules')[copyIndex()].direction]",
+        "protocol": "[parameters('arrayOfRules')[copyIndex()].protocol]",
+        "sourceAddressPrefix": "[parameters('arrayOfRules')[copyIndex()].sourceAddressPrefix]",
+        "sourcePortRange": "[parameters('arrayOfRules')[copyIndex()].sourcePortRange]"
+      },
+      "copy":{
+        "count": "[length(parameters('arrayOfRules'))]",
+        "name": "nsgRules"
+      }
+    }
+  ]
+}

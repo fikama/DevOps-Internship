@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "type": "string"
+    },
+    "nsgName": {
+      "type": "string"
+    },
+    "subnet": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  },
+  "variables":{
+  },
+  "resources":[
+    {
+      "apiVersion": "2017-08-01",
+      "name": "apply-nsg-to-subnet",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('group')]",
+
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "apiVersion": "2018-03-01",
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "name": "[concat(parameters('vnetName'), '/', parameters('subnet'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnet')), '2018-03-01').addressPrefix]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

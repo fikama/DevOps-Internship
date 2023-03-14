@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "ukwest"
+        },
+        "vnetName": {
+            "value": "testvnet246"
+        },
+        "addressSpace": {
+            "value": "192.168.0.0/16"
+        },
+        "arrayOfSubnets": {
+            "value": [
+                {
+                    "name": "sub1",
+                    "addressPrefix": "192.168.1.0/24"
+                },
+                {
+                    "name": "sub2",
+                    "addressPrefix": "192.168.2.0/24"
+                },
+                {
+                    "name": "sub3",
+                    "addressPrefix": "192.168.3.0/24"
+                }
+            ]
+        }
+    }
+}
