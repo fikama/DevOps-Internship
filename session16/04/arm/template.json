@@ -1,0 +1,82 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string"
+        },
+        "storageAccountName": {
+            "type": "string"
+        },
+        "pricingTier": {
+            "type": "string"
+        },
+        "identityName": {
+            "type": "string"
+        },
+        "uid": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        }
+    },
+    "variables": {
+
+    },
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-09-01",
+            "location": "[parameters('location')]",
+            "properties": {},
+            "kind": "StorageV2",
+            "sku": {
+                "name": "[parameters('pricingTier')]"
+            }
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2021-09-01",
+            "properties": {},
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "type": "Microsoft.Storage/storageAccounts/fileservices",
+            "apiVersion": "2021-09-01",
+            "properties": {},
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
+                "[concat(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '/blobServices/default')]"
+            ]
+        },
+        {
+          "type": "Microsoft.Resources/deploymentScripts",
+          "apiVersion": "2020-10-01",
+          "name": "demoSample",
+          "location": "[resourceGroup().location]",
+          "identity": {
+            "type": "UserAssigned",
+            "userAssignedIdentities": {
+              "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]": {
+              }
+            }
+          },
+          "kind": "AzureCLI",
+          "properties": {
+            "forceUpdateTag": "[parameters('uid')]",
+            "azCliVersion": "2.9.1",
+            "timeout": "PT30M",
+            "scriptContent": "
+              az storage blob service-properties update --account-name przechowywalnia --static-website true
+            ",
+            "cleanupPreference": "Always",
+            "retentionInterval": "P1D"
+          }
+        }
+    ],
+    "outputs": {}
+}
