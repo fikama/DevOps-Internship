@@ -1,0 +1,17 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: AzureResourceGroupDeployment@2
+  inputs:
+    azureSubscription: 'boykoazure'
+    resourceGroupName: 'Cap.Filip-Marszalek' 
+    location: 'eastus'
+    templateLocation: 'Linked artifact'
+    csmFile: 'template.json'
+    csmParametersFile: 'parameters.json'
+    #overrideParameters: # Optional
+    deploymentMode: 'Incremental'

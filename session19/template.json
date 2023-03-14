@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Specifies the location in which to create the workspace."
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Automation account name"
+      }
+    },
+    "PythonRunbookName": {
+      "type": "String",
+      "defaultValue": "AzureAutomationPythonScript"
+    },
+    "schedule1StartTime": {
+      "type": "string",
+      "defaultValue": "2023-01-01T00:00:00Z",
+      "metadata": {
+        "description": "Start date of schedule1"
+      }
+    },
+    "schedule2StartTime": {
+      "type": "string",
+      "defaultValue": "2023-01-01T00:30:00Z",
+      "metadata": {
+        "description": "Start date of schedule1"
+      }
+    }
+  },
+  "variables": {
+      "jobScheduleName1": "[guid('name1')]",
+      "jobScheduleName2": "[guid('name2')]",
+      "scheduleName": "schedule246"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2020-01-13-preview",
+      "name": "[parameters('automationAccountName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "sku": {
+          "name": "Basic"
+        }
+      },
+      "resources": [
+        {
+          "type": "runbooks",
+          "apiVersion": "2020-01-13-preview",
+          "name": "[parameters('PythonRunbookName')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[parameters('automationAccountName')]"
+          ],
+          "properties": {
+            "runbookType": "Python3",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "publishContentLink": {
+              "uri": "https://raw.githubusercontent.com/Filip-Marszalek-Intership/session19/master/runbook.ps1",
+              "version": "1.0.0.0"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2020-01-13-preview",
+      "name": "[concat(parameters('automationAccountName'),'/',variables('scheduleName'),'1')]",
+      "properties": {
+        "frequency": "hour",
+        "interval": 1,
+        "startTime": "[parameters('schedule1StartTime')]"
+      }
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+      "apiVersion": "2020-01-13-preview",
+      "name": "[concat(parameters('automationAccountName'),'/',variables('jobScheduleName1'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts/schedules/',parameters('automationAccountName'), concat(variables('scheduleName'),'1'))]",
+        "[resourceId('Microsoft.Automation/automationAccounts/runbooks/',parameters('automationAccountName'), parameters('PythonRunbookName'))]"
+      ],
+      "properties": {
+        "parameters": {
+          "AppService": "vmControlFun",
+          "State": "on"
+        },
+        "runbook": {
+          "name": "[parameters('PythonRunbookName')]"
+        },
+        "schedule": {
+          "name": "[concat(variables('scheduleName'),'1')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2020-01-13-preview",
+      "name": "[concat(parameters('automationAccountName'),'/',variables('scheduleName'),'2')]",
+      "properties": {
+        "frequency": "hour",
+        "interval": 1,
+        "startTime": "[parameters('schedule2StartTime')]"
+      }
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+      "apiVersion": "2020-01-13-preview",
+      "name": "[concat(parameters('automationAccountName'),'/',variables('jobScheduleName2'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts/schedules/',parameters('automationAccountName'), concat(variables('scheduleName'),'2'))]",
+        "[resourceId('Microsoft.Automation/automationAccounts/runbooks/',parameters('automationAccountName'), parameters('PythonRunbookName'))]"
+      ],
+      "properties": {
+        "parameters": {
+          "AppService": "vmControlFun",
+          "State": "on"
+        },
+        "runbook": {
+          "name": "[parameters('PythonRunbookName')]"
+        },
+        "schedule": {
+          "name": "[concat(variables('scheduleName'),'2')]"
+        }
+      }
+    }
+  ]
+}
