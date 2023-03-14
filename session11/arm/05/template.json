@@ -1,0 +1,49 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServiceName": {
+            "type": "string"
+        },
+        "storageAccountURL": {
+            "type": "string"
+        },
+        "frequencyInterval": {
+            "type": "int"
+        },
+        "frequencyUnit": {
+            "type": "string",
+            "allowedValues": [
+                "Day",
+                "Hour"
+              ]
+        },
+        "retentionPeriodInDays": {
+            "type": "int"
+        }
+    },
+    "variables": {
+
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('appServiceName'),'/backup')]",
+            "kind": "backup",
+            "properties": {
+              "backupName": "nameOfTheBackup",
+              "backupSchedule": {
+                "frequencyInterval": "[parameters('frequencyInterval')]",
+                "frequencyUnit": "[parameters('frequencyUnit')]",
+                "keepAtLeastOneBackup": "true",
+                "retentionPeriodInDays": "[parameters('retentionPeriodInDays')]"
+              },
+
+              "enabled": "true",
+              "storageAccountUrl": "[parameters('storageAccountURL')]"
+            }
+        }
+    ],
+    "outputs": {}
+}

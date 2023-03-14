@@ -1,0 +1,82 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "administrators": {
+            "type": "object",
+            "defaultValue": {}
+        },
+        "databaseName": {
+            "type": "string"
+        },
+        "skuName": {
+            "type": "string"
+        },
+        "tier": {
+            "type": "string"
+        },
+        "firewallRules": {
+            "type": "array",
+            "metadata": {
+                "description": "array of firewall rules"
+            }
+        },
+        "requestedBackupStorageRedundancy": {
+            "type": "string",
+            "defaultValue": "Local"
+        }
+    },
+    "variables":{
+
+    },
+    "resources":[
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2020-11-01-preview",
+            "name": "[parameters('serverName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "version": "12.0",
+                "administrators": "[parameters('administrators')]"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2014-04-01-preview",
+            "name": "[concat(parameters('serverName'),'/',parameters('firewallRules')[copyIndex()].name)]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('serverName'))]"
+            ],
+            "properties": {
+                "endIpAddress": "[parameters('firewallRules')[copyIndex()].start]",
+                "startIpAddress": "[parameters('firewallRules')[copyIndex()].end]"
+            },
+            "copy":{
+                "count": "[length(parameters('firewallRules'))]",
+                "name": "firewallRules"
+
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2021-08-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('serverName'),'/', parameters('databaseName'))]",
+            "properties": {
+                "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
+            },
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('tier')]"
+            }
+        }
+
+    ]
+}

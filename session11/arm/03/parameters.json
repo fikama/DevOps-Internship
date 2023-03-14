@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "89868dff-c2c4-4b10-98b8-3827d09af19f"
+        },
+        "name": {
+            "value": "nazwa246"
+        },
+        "location": {
+            "value": "UK South"
+        },
+        "hostingPlanName": {
+            "value": "ASP-test-9529"
+        },
+        "serverFarmResourceGroup": {
+            "value": "test"
+        },
+        "sku": {
+            "value": "Free"
+        },
+        "skuCode": {
+            "value": "S1"
+        },
+        "dockerHubImage": {
+            "value": "filip246/hello_world_nginx"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        }
+    }
+}
