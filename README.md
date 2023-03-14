@@ -10,7 +10,7 @@ Each script allows to give its inputs via a dedicated input file or shell argume
 - **[session07]()**
     - **[02]()** - creates Virtual Network
     - **[03]()** - creates Azure Network Security Group
-    - **[04]()** - assigns given `network security group` to given `subnet`
+    - **[04]()** - assigns given network security group to given subnet
     - **[05]()** - creates Virtual Machine
 - **[session08]()** - creates WebApp and AppService plan for it
 - **[session09]()**
