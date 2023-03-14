@@ -1,7 +1,7 @@
 # Azure DevOps Internship code
 The scripts below are a product of my Azure DevOps internship at CapGemini. They target azure if not specified otherwise. My tasks were split into several areas:
 #### 1. Docker Images & github/azure pipelines
-- **[statis-website-01]()** - Docker Image that hosts test website locally
+- **[static-website-01]()** - Docker Image that hosts test website locally
 - **[catalog-api]()** - creates a Dockerfile and pipeline (on Azure DevOPS and GitHub actions) for running and testing a NodeJS app
 - **[booking-api]()** - creates a Dockerfile and pipeline (on Azure DevOPS and GitHub actions) for running and testing a .NET app
 - **[session06]()** - creates starter pipeline in Azure DevOps and GitHub Actions
